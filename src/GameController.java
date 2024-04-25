@@ -1,7 +1,7 @@
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
-public class Game {
+public class GameController {
 
     public static final int PIPE_DELAY = 100;
 
@@ -9,17 +9,19 @@ public class Game {
 
     private int pauseDelay;
     private int restartDelay;
-    private int pipeDelay;
+    private int objektDelay;
 
     private Bird bird;
     private ArrayList<Pipe> pipes;
+    private ArrayList<Worm> worms;
     private Keyboard keyboard;
 
     public int score;
+    public int wormCounter;
     public Boolean gameover;
     public Boolean started;
 
-    public Game() {
+    public GameController() {
         keyboard = Keyboard.getInstance();
         restart();
     }
@@ -32,10 +34,11 @@ public class Game {
         score = 0;
         pauseDelay = 0;
         restartDelay = 0;
-        pipeDelay = 0;
+        objektDelay = 0;
 
         bird = new Bird();
         pipes = new ArrayList<Pipe>();
+        worms = new ArrayList<Worm>();
     }
 
     public void update() {
@@ -55,7 +58,7 @@ public class Game {
         if (gameover)
             return;
 
-        movePipes();
+        moveObjekts();
         checkForCollisions();
     }
 
@@ -64,6 +67,8 @@ public class Game {
         renders.add(new Render(0, 0, "lib/background.png"));
         for (Pipe pipe : pipes)
             renders.add(pipe.getRender());
+        for (Worm worm : worms)
+            renders.add(worm.getRender());
         renders.add(new Render(0, 0, "lib/foreground.png"));
         renders.add(bird.getRender());
         return renders;
@@ -96,15 +101,15 @@ public class Game {
         }
     }
 
-    private void movePipes() {
-        pipeDelay--;
-
-        if (pipeDelay < 0) {
-            pipeDelay = PIPE_DELAY;
+    private void moveObjekts() {
+        objektDelay--;
+        Worm wormNext = null;
+        if (objektDelay < 0) {
+            objektDelay = PIPE_DELAY;
             Pipe northPipe = null;
             Pipe southPipe = null;
 
-            // Look for pipes off the screen
+            // Look for Objekts off the screen
             for (Pipe pipe : pipes) {
                 if (pipe.x - pipe.width < 0) {
                     if (northPipe == null) {
@@ -113,6 +118,12 @@ public class Game {
                         southPipe = pipe;
                         break;
                     }
+                }
+            }
+
+            for (Worm worm : worms){
+                if (worm.x - worm.height < 0) {
+                    wormNext = worm;
                 }
             }
 
@@ -132,12 +143,32 @@ public class Game {
                 southPipe.reset();
             }
 
-            northPipe.y = southPipe.y + southPipe.height + 175;
+
+            Worm worm;
+            if (wormNext == null) {
+                worm = new Worm(southPipe);
+                worms.add(worm);
+            } else if (wormNext.collectet){
+                worm = new Worm(southPipe);
+                worms.add(worm);
+                wormNext.reset();
+
+            } else { // Worm was missed
+                worm = new Worm(southPipe);
+                worms.add(worm);
+                wormNext.reset();
+            }
+            wormNext = worm;
+
+            northPipe.y = southPipe.y + southPipe.height + 250;
         }
 
         for (Pipe pipe : pipes) {
             pipe.update();
         }
+
+        for (Worm worm : worms)
+            worm.update();
     }
 
     private void checkForCollisions() {
@@ -146,15 +177,24 @@ public class Game {
             if (pipe.collides(bird.x, bird.y, bird.width, bird.height)) {
                 gameover = true;
                 bird.dead = true;
+                System.out.println(bird.x+" vs "+pipe.x);
             } else if (pipe.x == bird.x && pipe.orientation.equalsIgnoreCase("south")) {
                 score++;
             }
         }
 
+        for (Worm worm : worms){
+            if (worm.collides(bird.x, bird.y, bird.width, bird.height)) {
+                worm.collectet = true;
+                wormCounter++;
+                worm.y = -200;
+            }
+        }
+
         // Ground + Bird collision
-        if (bird.y + bird.height > App.HEIGHT - 80) {
+        if (bird.y + bird.height > Controller.HEIGHT - 80) {
             gameover = true;
-            bird.y = App.HEIGHT - 80 - bird.height;
+            bird.y = Controller.HEIGHT - 80 - bird.height;
         }
     }
 }

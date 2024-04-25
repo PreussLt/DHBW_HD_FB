@@ -21,7 +21,7 @@ public class Bird {
     private Keyboard keyboard;
 
     public Bird() {
-        x = 100;
+        x = 140;
         y = 150;
         yvel = 0;
         width = 45;

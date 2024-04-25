@@ -20,7 +20,7 @@ public class Pipe {
     public void reset() {
         width = 66;
         height = 400;
-        x = App.WIDTH + 2;
+        x = Controller.WIDTH + 2;
 
         if (orientation.equals("south")) {
             y = -(int)(Math.random() * 120) - height / 2;
@@ -38,8 +38,10 @@ public class Pipe {
         if (_x + _width - margin > x && _x + margin < x + width) {
 
             if (orientation.equals("south") && _y < y + height) {
+                System.out.println("collides south");
                 return true;
             } else if (orientation.equals("north") && _y + _height > y) {
+                System.out.println("collides north");
                 return true;
             }
         }

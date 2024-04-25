@@ -1,15 +1,12 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.awt.geom.*;
 
 public class GamePanel extends JPanel implements Runnable {
 
-    private Game game;
+    private final GameController game;
 
-    public GamePanel() {
-        game = new Game();
-        new Thread(this).start();
+    public GamePanel(GameController game) {
+        this.game = game;
     }
 
     public void update() {
@@ -35,7 +32,8 @@ public class GamePanel extends JPanel implements Runnable {
             g2D.drawString("Press SPACE to start", 150, 240);
         } else {
             g2D.setFont(new Font("TimesRoman", Font.PLAIN, 24));
-            g2D.drawString(Integer.toString(game.score), 10, 465);
+            g2D.drawString(Integer.toString(game.score), 10, 750);
+            g2D.drawString(Integer.toString(game.wormCounter), 20,750 );
         }
 
         if (game.gameover) {
