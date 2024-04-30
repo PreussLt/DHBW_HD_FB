@@ -30,7 +30,6 @@ public class Bird {
         jumpDelay = 0;
         rotation = 0.0;
         dead = false;
-
         keyboard = Keyboard.getInstance();
     }
 
@@ -70,5 +69,10 @@ public class Bird {
         r.transform.translate(-width / 2, -height / 2);
 
         return r;
+    }
+
+    public void resetGravity(){
+        yvel = 0;
+        gravity = 0.5;
     }
 }

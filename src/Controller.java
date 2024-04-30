@@ -1,4 +1,7 @@
 import javax.swing.*;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 
 public class Controller {
 
@@ -12,16 +15,15 @@ public class Controller {
         JFrame frame = new JFrame();
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(WIDTH, HEIGHT);
         frame.setLocationRelativeTo(null);
 
         Keyboard keyboard = Keyboard.getInstance();
         frame.addKeyListener(keyboard);
 
 
-        MainMenu mainMenu = new MainMenu();
-        mainMenu.getStatMenu();
         GameController game = new GameController();
-        GamePanel panel = new GamePanel(game);
+        GamePanel panel = new GamePanel(game, new MainMenu());
 
 
 
@@ -33,4 +35,7 @@ public class Controller {
         frame.setResizable(false);
         frame.setSize(WIDTH, HEIGHT);
     }
+
+
+
 }
