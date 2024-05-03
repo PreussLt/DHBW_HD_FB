@@ -51,7 +51,7 @@ public class Worm {
         r.y = y;
 
         if (image == null) {
-            image = Util.loadImage("lib/wormb.png");
+            image = Util.loadImage("lib/worm.png");
         }
         r.image = image;
 
