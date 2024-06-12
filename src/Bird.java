@@ -53,7 +53,7 @@ public class Bird {
         r.y = y;
 
         if (image == null) {
-            image = Util.loadImage("lib/bird.png");     
+            image = Util.loadImage("img/bird.png");     
         }
         r.image = image;
 

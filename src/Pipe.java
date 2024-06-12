@@ -55,7 +55,7 @@ public class Pipe {
         r.y = y;
 
         if (image == null) {
-            image = Util.loadImage("lib/pipe-" + orientation + ".png");
+            image = Util.loadImage("img/pipe-" + orientation + ".png");
         }
         r.image = image;
 

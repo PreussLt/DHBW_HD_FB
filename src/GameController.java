@@ -31,7 +31,7 @@ public class GameController {
     }
 
     public void restart() {
-        paused = false;
+        setPaused(false);
         started = false;
         gameover = false;
 
@@ -40,9 +40,9 @@ public class GameController {
         wormCounter = 0;
         abillityAktiv=-1;
 
-        bird = new Bird();
-        pipes = new ArrayList<Pipe>();
-        worms = new ArrayList<Worm>();
+        setBird(new Bird());
+        setPipes(new ArrayList<Pipe>());
+        setWorms(new ArrayList<Worm>());
     }
 
     public void update() {
@@ -50,10 +50,10 @@ public class GameController {
             return;
         }
 
-        if (paused)
+        if (getPaused())
             return;
 
-        bird.update();
+        getBird().update();
 
         if (gameover)
             return;
@@ -64,13 +64,13 @@ public class GameController {
 
     public ArrayList<Render> getRenders() {
         ArrayList<Render> renders = new ArrayList<Render>();
-        renders.add(new Render(0, 0, "lib/background.png"));
-        for (Pipe pipe : pipes)
+        renders.add(new Render(0, 0, "img/background.png"));
+        for (Pipe pipe : getPipes())
             renders.add(pipe.getRender());
-        for (Worm worm : worms)
+        for (Worm worm : getWorms())
             renders.add(worm.getRender());
-        renders.add(new Render(0, 0, "lib/foreground.png"));
-        renders.add(bird.getRender());
+        renders.add(new Render(0, 0, "img/foreground.png"));
+        renders.add(getBird().getRender());
         return renders;
     }
 
@@ -85,7 +85,7 @@ public class GameController {
             Pipe southPipe = null;
 
             // Look for Objekts off the screen
-            for (Pipe pipe : pipes) {
+            for (Pipe pipe : getPipes()) {
                 if (pipe.x - pipe.width < 0) {
                     if (northPipe == null) {
                         northPipe = pipe;
@@ -96,15 +96,15 @@ public class GameController {
                 }
             }
 
-            for (Worm worm : worms){
-                if (worm.x - worm.height < 0 && worms.size() < pipes.size()/2) {
+            for (Worm worm : getWorms()){
+                if (worm.x - worm.height < 0 && getWorms().size() < getPipes().size()/2) {
                     wormNext = worm;
                 }
             }
 
             if (northPipe == null) {
                 Pipe pipe = new Pipe("north");
-                pipes.add(pipe);
+                getPipes().add(pipe);
                 northPipe = pipe;
             } else {
                 northPipe.reset();
@@ -112,7 +112,7 @@ public class GameController {
 
             if (southPipe == null) {
                 Pipe pipe = new Pipe("south");
-                pipes.add(pipe);
+                getPipes().add(pipe);
                 southPipe = pipe;
             } else {
                 southPipe.reset();
@@ -122,15 +122,15 @@ public class GameController {
             Worm worm;
             if (wormNext == null) {
                 worm = new Worm(southPipe);
-                worms.add(worm);
+                getWorms().add(worm);
             } else if (wormNext.collectet){
                 worm = new Worm(southPipe);
-                worms.add(worm);
+                getWorms().add(worm);
                 wormNext.reset();
 
             } else { // Worm was missed
                 worm = new Worm(southPipe);
-                worms.add(worm);
+                getWorms().add(worm);
                 wormNext.reset();
             }
             wormNext = worm;
@@ -138,37 +138,37 @@ public class GameController {
             northPipe.y = southPipe.y + southPipe.height + 250;
         }
 
-        for (Pipe pipe : pipes) {
+        for (Pipe pipe : getPipes()) {
             pipe.update();
         }
 
-        for (Worm worm : worms)
+        for (Worm worm : getWorms())
             worm.update();
     }
 
     private void checkForCollisions() {
 
-        for (Pipe pipe : pipes) {
-            if (pipe.collides(bird.x, bird.y, bird.width, bird.height) ) {
+        for (Pipe pipe : getPipes()) {
+            if (pipe.collides(getBird().x, getBird().y, getBird().width, getBird().height) ) {
                 if (ability != null && ability.abilitynum == 1 && abillityAktiv >-1){
                     abillityAktiv=0;
                 }else {
                     gameover = true;
-                    bird.dead = true;
+                    getBird().dead = true;
                 }
-            } else if (pipe.x == bird.x && pipe.orientation.equalsIgnoreCase("south")) {
+            } else if (pipe.x == getBird().x && pipe.orientation.equalsIgnoreCase("south")) {
                 score++;
                 abillityAktiv--;
                 if (abillityAktiv>=0){
-                    ability.getAbility(this,bird);
+                    ability.getAbility(this,getBird());
                 }else if (abillityAktiv==-1){
-                    ability.removeAbility(bird);
+                    ability.removeAbility(getBird());
                 }
             }
         }
 
-        for (Worm worm : worms){
-            if (worm.collides(bird.x, bird.y, bird.width, bird.height)) {
+        for (Worm worm : getWorms()){
+            if (worm.collides(getBird().x, getBird().y, getBird().width, getBird().height)) {
                 worm.collectet = true;
                 wormCounter++;
                 worm.y = -200;
@@ -181,11 +181,43 @@ public class GameController {
         }
 
         // Ground + Bird collision
-        if (bird.y + bird.height > Controller.HEIGHT - 80) {
+        if (getBird().y + getBird().height > Controller.HEIGHT - 80) {
             gameover = true;
-            bird.y = Controller.HEIGHT - 80 - bird.height;
+            getBird().y = Controller.HEIGHT - 80 - getBird().height;
         }
 
         if (score>highscore)highscore = score;
     }
+
+	public Boolean getPaused() {
+		return paused;
+	}
+
+	public void setPaused(Boolean paused) {
+		this.paused = paused;
+	}
+
+	public ArrayList<Pipe> getPipes() {
+		return pipes;
+	}
+
+	public void setPipes(ArrayList<Pipe> pipes) {
+		this.pipes = pipes;
+	}
+
+	public Bird getBird() {
+		return bird;
+	}
+
+	public void setBird(Bird bird) {
+		this.bird = bird;
+	}
+
+	public ArrayList<Worm> getWorms() {
+		return worms;
+	}
+
+	public void setWorms(ArrayList<Worm> worms) {
+		this.worms = worms;
+	}
 }

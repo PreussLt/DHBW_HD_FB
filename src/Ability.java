@@ -12,11 +12,11 @@ public class Ability {
         abilitynum =(int)(Math.random() * 3);
         System.out.println(abilitynum);
         switch (abilitynum) {
-            case 0: image = Util.loadImage("lib/2x.png");
+            case 0: image = Util.loadImage("img/2x.png");
             break;
-            case 1: image = Util.loadImage("lib/Schild.png");
+            case 1: image = Util.loadImage("img/Schild.png");
             break;
-            case 2: image = Util.loadImage("lib/Verlangsamung.png");
+            case 2: image = Util.loadImage("img/Verlangsamung.png");
             break;
         }
 
@@ -24,7 +24,7 @@ public class Ability {
 
     public void getAbility(GameController game, Bird bird){
         switch (abilitynum) {
-            case 0: image = Util.loadImage("lib/2x.png");
+            case 0: image = Util.loadImage("img/2x.png");
             game.score++;
                 break;
             case 2:
